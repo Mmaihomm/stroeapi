@@ -25,6 +25,7 @@ from .serializers import TokenObtainLifetimeSerializer, TokenRefreshLifetimeSeri
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({

@@ -3,7 +3,7 @@ from rest_framework import generics, permissions, serializers
 from django.contrib.auth.models import User
 from django.contrib import admin
 admin.autodiscover()
-from .serializers import InvoiceDetailSerializer,UserSerializer,RegisterSerializer,CategorySerializer,CartSerializer,ProductSerializer,ProductImageSerializer,InvoiceSerializer,Invoice_itemSerializer
+from .serializers import *
 from .models import Category,Cart,Product,ProductImage,Invoice,Invoice_item
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 from django.http import HttpResponse, JsonResponse
@@ -420,8 +420,30 @@ class GetMyInvoiceDetail(generics.RetrieveUpdateDestroyAPIView):
         return obj
 
 
+
 class SubmitVoidInvoice(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+    def post(self, request, pk):
+        try:
+            invoices = Invoice.objects.get(id=pk)
+        except:
+            raise NotFound()
+        # data = request.data
+        if invoices.status == "Delivered":
+            return Response({
+                "code": "VOID_INVOICE_FAIL",
+                "msg": "ยกเลิกรายการไม่สำเร็จเนื่องจากอยู่ในสถานะ ชำระเงินแล้ว"
+            },status=status.HTTP_400_BAD_REQUEST)
+        if invoices.status == "Cancel":
+            return Response({
+                "code": "VOIDED",
+                "msg": "รายการสินค้านี้อยู่ในสถานะ 'ยกเลิก' รายการแล้ว"
+            },status=status.HTTP_400_BAD_REQUEST)
+        invoices.status = "Cancel"
+        invoices.save()
+        return Response({
+            "msg" : "ยกเลิกรายการสำเร็จ",
+        },status=status.HTTP_200_OK)

@@ -25,5 +25,5 @@ urlpatterns = format_suffix_patterns([
     path('checkout/', views.Checkout.as_view(),name='checkout'),
     path('invoice/', views.GetMyInvoiceList.as_view(),name='invoice'),
     path('invoice/<int:pk>/', views.GetMyInvoiceDetail.as_view(),name='invoice-detail'),
-    # path('invoice/<int:pk>/void/', views.Register.as_view(),name='void'),
+    path('invoice/<int:pk>/void/', views.SubmitVoidInvoice.as_view(),name='void'),
     ]) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

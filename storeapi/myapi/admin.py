@@ -17,6 +17,7 @@ class InvoiceAdmin(admin.ModelAdmin):
 
 class Invoice_itemAdmin(admin.ModelAdmin):
     list_display = ['id','invoice','product','quantity','total','created_datetime']
+    
 
 # Register your models here.
 admin.site.register(Category,CategoryAdmin)
